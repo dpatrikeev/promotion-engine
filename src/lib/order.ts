@@ -18,17 +18,32 @@ const getDiscountValue = (
   { sku, items, value }: Promotion
 ) => {
   let discount = 0;
-  const cartItems = cart.get(sku as string);
 
-  if (cartItems && cartItems >= items) {
-    const discountItems = Math.floor(cartItems / items);
-    const productValue = products.get(sku as string);
+  if (Array.isArray(sku)) {
+    if (sku.every((s) => cart.has(s))) {
+      const discountItems = Math.min(...sku.map((s) => cart.get(s)));
 
-    const subtotal = productValue * cartItems;
-    const discounted = value * discountItems;
-    const left = productValue * (cartItems - items * discountItems);
+      const subtotal = sku.reduce((acc, s) => {
+        const productValue = products.get(s);
 
-    discount = subtotal - (discounted + left);
+        return (acc = acc + productValue);
+      }, 0);
+
+      discount = (subtotal - value) * discountItems;
+    }
+  } else {
+    const cartItems = cart.get(sku);
+
+    if (cartItems && cartItems >= items) {
+      const discountItems = Math.floor(cartItems / items);
+      const productValue = products.get(sku);
+
+      const subtotal = productValue * cartItems;
+      const discounted = value * discountItems;
+      const left = productValue * (cartItems - items * discountItems);
+
+      discount = subtotal - (discounted + left);
+    }
   }
 
   return discount;

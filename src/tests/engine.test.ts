@@ -88,5 +88,31 @@ describe('Promotion Engine', () => {
 
       expect(result).toBe(420);
     });
+
+    it('With 2 bundles', () => {
+      const cart = new Map([
+        ['A', 3],
+        ['B', 5],
+        ['C', 2],
+        ['D', 2],
+      ]);
+
+      const result = getTotalOrderValue(cart, products, promotions);
+
+      expect(result).toBe(310);
+    });
+
+    it('With 1 bundle & 1 product in a bundle', () => {
+      const cart = new Map([
+        ['A', 3],
+        ['B', 5],
+        ['C', 2],
+        ['D', 1],
+      ]);
+
+      const result = getTotalOrderValue(cart, products, promotions);
+
+      expect(result).toBe(300);
+    });
   });
 });
