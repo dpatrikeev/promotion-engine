@@ -1,0 +1,17 @@
+{
+  "name": "promotion-engine",
+  "version": "0.0.1",
+  "main": "index.ts",
+  "repository": "https://github.com/dpatrikeev/promotion-engine.git",
+  "author": "@dpatrikeev",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.4",
+    "typescript": "^4.3.5"
+  }
+}
