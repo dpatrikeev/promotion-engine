@@ -22,9 +22,9 @@ describe('Subtotal calculation', () => {
       ['E', 50],
     ]);
 
-    const result = getSubtotalOrderValue(cart, products);
-
-    expect(result).toBe(NaN);
+    expect(() => {
+      getSubtotalOrderValue(cart, products);
+    }).toThrowError();
   });
 
   it('Basic cart', () => {

@@ -1,9 +1,14 @@
 import { Cart, Products, Promotion } from '../interfaces';
+import { getBundlePromotionValue, getAmountPromotionValue } from './promotions';
 
 export const getSubtotalOrderValue = (cart: Cart, products: Products) => {
   let totalValue = 0;
 
   cart.forEach((items, sku) => {
+    if (products.get(sku) === undefined) {
+      throw new Error('A non-valid product has been added to the cart.');
+    }
+
     const productValue = products.get(sku);
 
     totalValue = totalValue + productValue * items;
@@ -15,38 +20,15 @@ export const getSubtotalOrderValue = (cart: Cart, products: Products) => {
 const getDiscountValue = (
   cart: Cart,
   products: Products,
-  { sku, items, value }: Promotion
+  promotion: Promotion
 ) => {
-  let discount = 0;
+  const isBundlePromotion = Array.isArray(promotion.sku);
 
-  if (Array.isArray(sku)) {
-    if (sku.every((s) => cart.has(s))) {
-      const discountItems = Math.min(...sku.map((s) => cart.get(s)));
-
-      const subtotal = sku.reduce((acc, s) => {
-        const productValue = products.get(s);
-
-        return (acc = acc + productValue);
-      }, 0);
-
-      discount = (subtotal - value) * discountItems;
-    }
+  if (isBundlePromotion) {
+    return getBundlePromotionValue(cart, products, promotion);
   } else {
-    const cartItems = cart.get(sku);
-
-    if (cartItems && cartItems >= items) {
-      const discountItems = Math.floor(cartItems / items);
-      const productValue = products.get(sku);
-
-      const subtotal = productValue * cartItems;
-      const discounted = value * discountItems;
-      const left = productValue * (cartItems - items * discountItems);
-
-      discount = subtotal - (discounted + left);
-    }
+    return getAmountPromotionValue(cart, products, promotion);
   }
-
-  return discount;
 };
 
 const getTotalOrderValue = (
