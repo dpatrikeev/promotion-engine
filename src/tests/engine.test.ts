@@ -76,5 +76,17 @@ describe('Promotion Engine', () => {
 
       expect(result).toBe(0);
     });
+
+    it('No promotions', () => {
+      const cart = new Map([
+        ['A', 5],
+        ['B', 5],
+        ['C', 1],
+      ]);
+
+      const result = getTotalOrderValue(cart, products);
+
+      expect(result).toBe(420);
+    });
   });
 });
